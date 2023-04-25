@@ -3,9 +3,8 @@
 
 /**
  * _printf - Outputs a formatted string.
- * @format: Character string to print - may contain directives.
- *
- * Return: The number of characters printed.
+ * @format: Character string to print
+ * Return: characters printed.
  */
 int _printf(const char *format, ...)
 {

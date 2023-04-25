@@ -5,9 +5,9 @@
 #include <unistd.h>
 
 /**
- * struct conversion_specifier - a struct that contains a conversion specifier and its corresponding function
- * @format: the conversion specifier character
- * @func: a pointer to the function that handles the conversion specifier
+ * struct conversion_specifier - contains specifier and function
+ * @format: specifier character
+ * @func: a pointer to function that handles the conversion specifier
  */
 typedef struct conversion_specifier
 {
