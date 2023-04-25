@@ -53,7 +53,7 @@ void print_int(va_list args, int *count)
 	} while (num);
 
 	if (sign == -1)
-		uffer[i++] = '-';
+		buffer[i++] = '-';
 
 	while (--i >= 0)
 	{

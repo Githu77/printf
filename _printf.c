@@ -1,6 +1,5 @@
 #include "main.h"
 
-
 /**
 * print_char - prints a char
 * @args: arguments
@@ -33,7 +32,6 @@ void print_string(va_list args, int *count)
 
 /**
 * print_percent - prints a percent
-* print_char - prints character
 * @args: arguments
 * @count: chars printed
 */
@@ -43,6 +41,46 @@ void print_percent(va_list args, int *count)
 	(void)args;
 	putchar('%');
 	(*count)++;
+}
+
+/**
+* print_int - prints an integer
+* @args: arguments
+* @count: chars printed
+*/
+
+void print_int(va_list args, int *count)
+{
+	int n = va_arg(args, int);
+	int digits = 0, copy;
+
+	if (n == 0)
+	{
+		putchar('0');
+		(*count)++;
+		return;
+	}
+
+	if (n < 0)
+	{
+		putchar('-');
+		(*count)++;
+		n = -n;
+	}
+
+	copy = n;
+	while (copy)
+	{
+		digits++;
+		copy /= 10;
+	}
+
+	while (digits--)
+	{
+		putchar((n / pow(10, digits)) + '0');
+		(*count)++;
+		n %= (int)pow(10, digits);
+	}
 }
 
 /**
@@ -60,6 +98,8 @@ int _printf(const char *format, ...)
 		{'c', print_char},
 		{'s', print_string},
 		{'%', print_percent},
+		{'d', print_int},
+		{'i', print_int},
 		{0, NULL}
 	};
 
@@ -89,3 +129,4 @@ int _printf(const char *format, ...)
 	va_end(args);
 	return (count);
 }
+

@@ -3,6 +3,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <math.h>
 
 /**
 *struct format_specifier - specifies format
