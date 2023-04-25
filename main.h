@@ -5,19 +5,20 @@
 #include <unistd.h>
 
 /**
-
-struct arg_printer - Struct for argument printers
-@type: The type of argument to print
-@printer: The function to print the argument
-*/
-typedef struct arg_printer
+ * struct conversion_specifier - a struct that contains a conversion specifier and its corresponding function
+ * @format: the conversion specifier character
+ * @func: a pointer to the function that handles the conversion specifier
+ */
+typedef struct conversion_specifier
 {
-char type;
-int (*printer)(va_list *);
-} arg_printer_t;
+    char format;
+    int (*func)(va_list);
+} conv_spec;
+
+int print_char(va_list args);
+int print_str(va_list args);
+int print_percent(va_list args);
 int _printf(const char *format, ...);
-int print_char(va_list *args);
-int print_string(va_list *args);
-int print_percent(attribute((unused)) va_list *args);
 
 #endif /* MAIN_H */
+
