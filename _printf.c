@@ -13,49 +13,41 @@ int _printf(const char *format, ...)
 	int printed_chars = 0;
 
 	va_start(args, format);
-
-	while (*format != '\0')
+	while (*format)
 	{
-		if (*format == '%')
+		if (*format++ == '%')
 		{
-			format++;
-			if (*format == 'c')
+			switch (*format++)
 			{
-				char c = va_arg(args, int);
-
-				printed_chars += write(1, &c, 1);
-			}
-			else if (*format == 's')
-			{
-				char *str = va_arg(args, char *);
-
-				if (str == NULL)
-					str = "(null)";
-				while (*str != '\0')
+				case 'c':
 				{
-					printed_chars += write(1, str, 1);
-					str++;
+					char c = va_arg(args, int);
+
+					printed_chars += write(1, &c, 1);
+					break;
 				}
-			}
-			else if (*format == '%')
-			{
-				printed_chars += write(1, "%", 1);
-			}
-			else
-			{
-				printed_chars += write(1, &format[-1], 1);
-				printed_chars += write(1, &format[0], 1);
+				case 's':
+				{
+					char *str = va_arg(args, char *);
+
+					if (!str)
+						str = "(null)";
+					while (*str)
+						printed_chars += write(1, str++, 1);
+					break;
+				}
+				case '%':
+					printed_chars += write(1, "%", 1);
+					break;
+				default:
+					printed_chars += write(1, &format[-2], 2);
+					break;
 			}
 		}
 		else
-		{
-			printed_chars += write(1, format, 1);
-		}
-
-		format++;
+			printed_chars += write(1, format - 1, 1);
 	}
-
 	va_end(args);
-
 	return (printed_chars);
 }
+
