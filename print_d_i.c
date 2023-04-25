@@ -7,7 +7,7 @@
  * @format: Character string to print
  * Return: characters printed.
  */
-int _printf(const char *format, ...)
+int _print_d_i(const char *format, ...)
 {
 	va_list args;
 	int printed_chars = 0;
