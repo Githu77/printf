@@ -1,89 +1,78 @@
 #include "main.h"
 
-/**
- * print_char - prints a single character to stdout
- * @args: a va_list containing the character to print
- *
- * Return: the number of characters printed
- */
-int print_char(va_list args)
-{
-    char c = va_arg(args, int);
-    return (write(1, &c, 1));
-}
-
-/**
- * print_str - prints a string to stdout
- * @args: a va_list containing the string to print
- *
- * Return: the number of characters printed
- */
-int print_str(va_list args)
-{
-	int printed_chars = 0;
-
-    char *str = va_arg(args, char *);
-    if (!str)
-        str = "(null)";
-    while (*str)
-        printed_chars += write(1, str++, 1);
-    return (printed_chars);
-}
-
-/**
- * print_percent - prints a single percent character to stdout
- * @args: a va_list (unused)
- *
- * Return: the number of characters printed
- */
-int print_percent(va_list args)
-{
-    (void) args;
-    return (write(1, "%", 1));
-}
-
-/**
- * _printf - Outputs a formatted string.
- * @format: Character string to print - may contain directives.
- *
- * Return: The number of characters printed.
- */
+void clear_printf_args(va_list args, buffer_t *output);
+int execute_printf(const char *format, va_list args, buffer_t *output);
 int _printf(const char *format, ...)
 {
-	conv_spec specs[] = {
-        {'c', print_char},
-        {'s', print_str},
-        {'%', print_percent},
-        {'\0', NULL}
-    };
-    
+    buffer_t *output;
     va_list args;
-    int printed_chars = 0;
+    int result;
+
+    if (format == NULL)
+        return (-1);
+    output = init_buffer();
+    if (output == NULL)
+        return (-1);
 
     va_start(args, format);
 
-    while (*format)
-    {
-        if (*format++ == '%')
-        {
-            int i = 0;
-            while (specs[i].format != '\0' && specs[i].format != *format)
-                i++;
+    result = execute_printf(format, args, output);
 
-            if (specs[i].func != NULL)
-                printed_chars += specs[i].func(args);
-            else
+    va_end(args);
+    write(1, output->buffer, output->len);
+    free_buffer(output);
+
+    return (result);
+}
+
+void clear_printf_args(va_list args, buffer_t *output)
+{
+    va_end(args);
+    write(1, output->buffer, output->len);
+    free_buffer(output);
+}
+
+int execute_printf(const char *format, va_list args, buffer_t *output)
+{
+    int i, width, precision, result = 0;
+    char temp;
+    unsigned char flags, length;
+    unsigned int (*f)(va_list, buffer_t *,
+                      unsigned char, int, int, unsigned char);
+
+    for (i = 0; *(format + i); i++)
+    {
+        length = 0;
+        if (*(format + i) == '%')
+        {
+            temp = 0;
+            flags = handle_flags(format + i + 1, &temp);
+            width = handle_width(args, format + i + temp + 1, &temp);
+            precision = handle_precision(args, format + i + temp + 1,
+                                          &temp);
+            length = handle_length(format + i + temp + 1, &temp);
+
+            f = handle_specifiers(format + i + temp + 1);
+            if (f != NULL)
             {
-                printed_chars += write(1, &format[-2], 2);
-                if (*format != '\0')
-                    printed_chars += write(1, format, 1);
+                i += temp + 1;
+                result += f(args, output, flags, width, precision, length);
+                continue;
+            }
+            else if (*(format + i + temp + 1) == '\0')
+            {
+                result = -1;
+                break;
             }
         }
         else
-            printed_chars += write(1, format - 1, 1);
+        {
+            result += _memcpy(output, (format + i), 1);
+            continue;
+        }
+        i += (length != 0) ? 1 : 0;
     }
-
-    va_end(args);
-    return (printed_chars);
+    clear_printf_args(args, output);
+    return (result);
 }
 
