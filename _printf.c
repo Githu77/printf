@@ -1,11 +1,10 @@
-#include <stdarg.h>
-#include <unistd.h>
-#include <stdio.h>
+#include "main.h"
 
 /**
  * _printf - Outputs a formatted string.
  * @format: Character string to print
- * Return: characters printed.
+ *
+ * Return: The number of characters printed
  */
 int _printf(const char *format, ...)
 {
@@ -19,50 +18,39 @@ int _printf(const char *format, ...)
 		{
 			switch (*format++)
 			{
-				case 'b':
-				{
-					printed_chars += print_b(args);
-					break;
-				}
 				case 'c':
 				{
 					char c = va_arg(args, int);
-
-					printed_chars += write(1, &c, 1);
+					printed_chars += _putchar(c);
 					break;
 				}
 				case 's':
 				{
 					char *str = va_arg(args, char *);
-
 					if (!str)
 						str = "(null)";
 					while (*str)
-						printed_chars += write(1, str++, 1);
+						printed_chars += _putchar(*str++);
 					break;
 				}
-				case 'd':
-				case 'i':
+				case 'b':
 				{
-					int num = va_arg(args, int);
-
-					char buffer[32];
-					int len = snprintf(buffer, 32, "%d", num);
-
-					printed_chars += write(1, buffer, len);
+					printed_chars += print_b(args);
 					break;
 				}
 				case '%':
-					printed_chars += write(1, "%", 1);
+					printed_chars += _putchar('%');
 					break;
 				default:
-					printed_chars += write(1, &format[-2], 2);
+					printed_chars += _putchar(*--format);
 					break;
 			}
 		}
 		else
-			printed_chars += write(1, format - 1, 1);
+			printed_chars += _putchar(*(format - 1));
+		format++;
 	}
 	va_end(args);
 	return (printed_chars);
 }
+
