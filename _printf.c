@@ -1,17 +1,6 @@
 #include "main.h"
 
 /**
- * struct conversion_specifier - a struct that contains a conversion specifier and its corresponding function
- * @format: the conversion specifier character
- * @func: a pointer to the function that handles the conversion specifier
- */
-typedef struct conversion_specifier
-{
-    char format;
-    int (*func)(va_list);
-} conv_spec;
-
-/**
  * print_char - prints a single character to stdout
  * @args: a va_list containing the character to print
  *
