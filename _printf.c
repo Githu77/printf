@@ -1,58 +1,59 @@
-#include "main.h"
+#include <stdarg.h>
+#include <unistd.h>
+#include <stdio.h>
 
 /**
  * _printf - Outputs a formatted string.
  * @format: Character string to print
- *
- * Return: Number of characters printed
+ * Return: characters printed.
  */
 int _printf(const char *format, ...)
 {
 	va_list args;
-	int printed_chars = 0, i = 0;
+	int printed_chars = 0;
 
 	va_start(args, format);
-
-	while (format && format[i])
+	while (*format)
 	{
-		if (format[i] != '%')
-			printed_chars += _putchar(format[i]);
-		else if (format[i] == '%' && format[i + 1] == '%')
+		if (*format++ == '%')
 		{
-			printed_chars += _putchar('%');
-			i++;
-		}
-		else if (format[i] == '%' && format[i + 1])
-		{
-			switch (format[i + 1])
+			switch (*format++)
 			{
 				case 'c':
-					printed_chars += print_c(args);
+				{
+					char c = va_arg(args, int);
+					printed_chars += write(1, &c, 1);
 					break;
+				}
 				case 's':
-					printed_chars += print_s(args);
+				{
+					char *str = va_arg(args, char *);
+					if (!str)
+						str = "(null)";
+					while (*str)
+						printed_chars += write(1, str++, 1);
 					break;
-				case '%':
-					printed_chars += print_percent(args);
-					break;
+				}
 				case 'd':
 				case 'i':
-					printed_chars += print_d_i(args);
+				{
+					int num = va_arg(args, int);
+					char buffer[32];
+					int len = snprintf(buffer, 32, "%d", num);
+					printed_chars += write(1, buffer, len);
 					break;
-				case 'b':
-					printed_chars += print_b(args);
+				}
+				case '%':
+					printed_chars += write(1, "%", 1);
 					break;
 				default:
-					printed_chars += _putchar('%');
-					printed_chars += _putchar(format[i + 1]);
+					printed_chars += write(1, &format[-2], 2);
+					break;
 			}
-			i++;
 		}
-		i++;
+		else
+			printed_chars += write(1, format - 1, 1);
 	}
-
 	va_end(args);
-
 	return (printed_chars);
 }
-
