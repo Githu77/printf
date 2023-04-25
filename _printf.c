@@ -13,7 +13,6 @@ int _printf(const char *format, ...)
 	int printed_chars = 0;
 
 	va_start(args, format);
-
 	while (*format)
 	{
 		if (*format++ == '%')
