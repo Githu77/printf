@@ -1,5 +1,6 @@
 #include <stdarg.h>
 #include <unistd.h>
+#include <stdio.h>
 
 /**
  * _printf - Outputs a formatted string.
@@ -21,18 +22,25 @@ int _printf(const char *format, ...)
 				case 'c':
 				{
 					char c = va_arg(args, int);
-
 					printed_chars += write(1, &c, 1);
 					break;
 				}
 				case 's':
 				{
 					char *str = va_arg(args, char *);
-
 					if (!str)
 						str = "(null)";
 					while (*str)
 						printed_chars += write(1, str++, 1);
+					break;
+				}
+				case 'd':
+				case 'i':
+				{
+					int num = va_arg(args, int);
+					char buffer[32];
+					int len = snprintf(buffer, 32, "%d", num);
+					printed_chars += write(1, buffer, len);
 					break;
 				}
 				case '%':
@@ -49,3 +57,4 @@ int _printf(const char *format, ...)
 	va_end(args);
 	return (printed_chars);
 }
+
