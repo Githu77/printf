@@ -14,7 +14,7 @@ int _printf(const char *format, ...)
 
 	va_start(args, format);
 
-	for (; *format; format++)
+	while (*format != '\0')
 	{
 		if (*format == '%')
 		{
@@ -31,9 +31,10 @@ int _printf(const char *format, ...)
 
 				if (str == NULL)
 					str = "(null)";
-				for (; *str; str++)
+				while (*str != '\0')
 				{
 					printed_chars += write(1, str, 1);
+					str++;
 				}
 			}
 			else if (*format == '%')
@@ -50,8 +51,11 @@ int _printf(const char *format, ...)
 		{
 			printed_chars += write(1, format, 1);
 		}
+
+		format++;
 	}
 
 	va_end(args);
+
 	return (printed_chars);
 }
