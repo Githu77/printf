@@ -4,8 +4,11 @@
 #include <stdarg.h>
 #include <unistd.h>
 
-int _putchar(char c);
 int _printf(const char *format, ...);
+int _putchar(char c);
+int print_c(va_list args);
+int print_s(va_list args);
+int print_percent(va_list args);
 int print_d_i(va_list args);
 int print_b(va_list args);
 

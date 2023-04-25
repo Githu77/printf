@@ -1,28 +1,29 @@
 #include "main.h"
 
 /**
- * print_b - Prints an unsigned integer in binary notation
- * @args: A va_list containing the integer to print
+ * print_b - Converts an unsigned int to binary
+ * @args: A va_list containing the unsigned int to convert
  *
  * Return: The number of digits printed
  */
 int print_b(va_list args)
 {
-	unsigned int n = va_arg(args, unsigned int), bit_count = 0, result = 0;
+	unsigned int n = va_arg(args, unsigned int), mask = 1 << 31;
+	int result = 0, flag = 0;
 
-	if (n == 0)
-		return (_putchar('0'));
-
-	/* Count number of bits */
-	for (bit_count = 0; (n >> bit_count) != 0; bit_count++)
-		;
-
-	/* Print binary number */
-	while (bit_count > 0)
+	while (mask)
 	{
-		bit_count--;
-		result += _putchar(((n >> bit_count) & 1) + '0');
+		if (n & mask)
+		{
+			result += _putchar('1');
+			flag = 1;
+		}
+		else if (flag)
+			result += _putchar('0');
+		mask >>= 1;
 	}
+	if (!result)
+		result += _putchar('0');
 
 	return (result);
 }
