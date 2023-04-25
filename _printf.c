@@ -1,54 +1,53 @@
 #include "main.h"
-
+#include <unistd.h>
 
 /**
-* print_char - prints a char
-* @args: arguments
-* @count: chars printed
+*print_char - prints a char
+*@args: arguments
+*@count: chars printed
 */
 void print_char(va_list args, int *count)
 {
-	putchar(va_arg(args, int));
+	char c = va_arg(args, int);
+
+	write(1, &c, 1);
 	(*count)++;
 }
-
 /**
-* print_string - prints a string
-* @args: arguments
-* @count: chars printed
+*print_string - prints a string
+*@args: arguments
+*@count: chars printed
 */
-
 void print_string(va_list args, int *count)
 {
 	char *str = va_arg(args, char *);
 
 	if (!str)
-		str = "(null)";
+	str = "(null)";
 	while (*str)
 	{
-		putchar(*str++);
+		write(1, str, 1);
+		str++;
 		(*count)++;
 	}
 }
 
 /**
-* print_percent - prints a percent
-* print_char - prints character
-* @args: arguments
-* @count: chars printed
+*print_percent - prints a percent
+*@args: arguments
+*@count: chars printed
 */
-
 void print_percent(va_list args, int *count)
 {
 	(void)args;
-	putchar('%');
+	write(1, "%", 1);
 	(*count)++;
 }
 
 /**
-* _printf - printf function
-* @format: format string
-* Return: chars printed
+*_printf - printf function
+*@format: format string
+*Return: chars printed
 */
 int _printf(const char *format, ...)
 {
@@ -57,10 +56,10 @@ int _printf(const char *format, ...)
 	int i;
 
 	format_specifier formats[] = {
-		{'c', print_char},
-		{'s', print_string},
-		{'%', print_percent},
-		{0, NULL}
+	{'c', print_char},
+	{'s', print_string},
+	{'%', print_percent},
+	{0, NULL}
 	};
 
 	va_start(args, format);
@@ -81,7 +80,8 @@ int _printf(const char *format, ...)
 		}
 		else
 		{
-			putchar(*format++);
+			write(1, format, 1);
+			format++;
 			count++;
 		}
 	}
