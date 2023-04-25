@@ -19,21 +19,6 @@ int _print_d_i(const char *format, ...)
 		{
 			switch (*format++)
 			{
-				case 'c':
-				{
-					char c = va_arg(args, int);
-					printed_chars += write(1, &c, 1);
-					break;
-				}
-				case 's':
-				{
-					char *str = va_arg(args, char *);
-					if (!str)
-						str = "(null)";
-					while (*str)
-						printed_chars += write(1, str++, 1);
-					break;
-				}
 				case 'd':
 				case 'i':
 				{
@@ -43,12 +28,6 @@ int _print_d_i(const char *format, ...)
 					printed_chars += write(1, buffer, len);
 					break;
 				}
-				case '%':
-					printed_chars += write(1, "%", 1);
-					break;
-				default:
-					printed_chars += write(1, &format[-2], 2);
-					break;
 			}
 		}
 		else
