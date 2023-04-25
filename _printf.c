@@ -19,6 +19,11 @@ int _printf(const char *format, ...)
 		{
 			switch (*format++)
 			{
+				case 'b':
+				{
+					printed_chars += print_b(args);
+					break;
+				}
 				case 'c':
 				{
 					char c = va_arg(args, int);
