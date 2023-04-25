@@ -31,10 +31,10 @@ int print_char(va_list args)
  */
 int print_string(va_list args)
 {
+	int len = 0;
     char *str = va_arg(args, char *);
     if (!str)
         str = "(null)";
-    int len = 0;
     while (*str)
         len += write(1, str++, 1);
     return (len);
