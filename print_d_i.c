@@ -1,29 +1,59 @@
-#include "main.h"
 #include <stdarg.h>
+#include <unistd.h>
+#include <stdio.h>
+
 /**
- * print_d_i - prints an integer
- *
- * @args: arguments list containing the integer to print
- *
- * Return: number of characters printed
+ * _printf - Outputs a formatted string.
+ * @format: Character string to print
+ * Return: characters printed.
  */
-int print_d_i(va_list args)
+int _print_d_i(const char *format, ...)
 {
-        int n, result = 0;
-        int power = 1, i;
-        char buffer[1];
+	va_list args;
+	int printed_chars = 0;
 
-        n = va_arg(args, int);
-        if (n < 0) {
-                result += write(1, "-", 1);
-                n = -n;
-        }
-        while ((n / power) > 9)
-                power *= 10;
-        for (i = power; i > 0; i /= 10) {
-                buffer[0] = ((n / i) % 10) + '0';
-                result += write(1, buffer, 1);
-        }
-        return (result);
+	va_start(args, format);
+	while (*format)
+	{
+		if (*format++ == '%')
+		{
+			switch (*format++)
+			{
+				case 'c':
+				{
+					char c = va_arg(args, int);
+					printed_chars += write(1, &c, 1);
+					break;
+				}
+				case 's':
+				{
+					char *str = va_arg(args, char *);
+					if (!str)
+						str = "(null)";
+					while (*str)
+						printed_chars += write(1, str++, 1);
+					break;
+				}
+				case 'd':
+				case 'i':
+				{
+					int num = va_arg(args, int);
+					char buffer[32];
+					int len = snprintf(buffer, 32, "%d", num);
+					printed_chars += write(1, buffer, len);
+					break;
+				}
+				case '%':
+					printed_chars += write(1, "%", 1);
+					break;
+				default:
+					printed_chars += write(1, &format[-2], 2);
+					break;
+			}
+		}
+		else
+			printed_chars += write(1, format - 1, 1);
+	}
+	va_end(args);
+	return (printed_chars);
 }
-
