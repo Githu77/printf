@@ -28,4 +28,3 @@ int print_d_i(va_list args)
 
 	return (result);
 }
-

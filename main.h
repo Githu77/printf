@@ -9,4 +9,3 @@ int _printf(const char *format, ...);
 int print_d_i(va_list args);
 
 #endif /* MAIN_H */
-
