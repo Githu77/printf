@@ -1,67 +1,60 @@
-#include "main.h"
+#include <stdarg.h>
+#include <unistd.h>
+#include <stdio.h>
 
 /**
- * _function1 - Outputs a formatted string.
+ * _printf - Outputs a formatted string.
  * @format: Character string to print
  * Return: characters printed.
  */
-int _function1(const char *format, ...)
+int _printf(const char *format, ...)
 {
-    va_list args;
-    int printed_chars = 0;
+	va_list args;
+	int printed_chars = 0;
 
-    va_start(args, format);
-
-    while (*format)
-    {
-        if (*format == '%' && *(format + 1))
-        {
-            format++;
-
-            if (*format == 'd' || *format == 'i')
-            {
-                int num = va_arg(args, int);
-                char buffer[32];
-                int i = 0;
-
-                if (num == 0)
-                {
-                    printed_chars += write(1, "0", 1);
-                    continue;
-                }
-
-                if (num < 0)
-                {
-                    printed_chars += write(1, "-", 1);
-                    num = -num;
-                }
-
-                while (num != 0)
-                {
-                    buffer[i++] = num % 10 + '0';
-                    num /= 10;
-                }
-
-                while (i > 0)
-                {
-                    printed_chars += write(1, &buffer[--i], 1);
-                }
-            }
-            else
-            {
-                printed_chars += write(1, "%", 1);
-                printed_chars += write(1, &(*format), 1);
-            }
-        }
-        else
-        {
-            printed_chars += write(1, &(*format), 1);
-        }
-
-        format++;
-    }
-
-    va_end(args);
-    return (printed_chars);
+	va_start(args, format);
+	while (*format)
+	{
+		if (*format++ == '%')
+		{
+			switch (*format++)
+			{
+				case 'c':
+				{
+					char c = va_arg(args, int);
+					printed_chars += write(1, &c, 1);
+					break;
+				}
+				case 's':
+				{
+					char *str = va_arg(args, char *);
+					if (!str)
+						str = "(null)";
+					while (*str)
+						printed_chars += write(1, str++, 1);
+					break;
+				}
+				case 'd':
+				case 'i':
+				{
+					int num = va_arg(args, int);
+					char buffer[32];
+					int len = snprintf(buffer, 32, "%d", num);
+					printed_chars += write(1, buffer, len);
+					break;
+				}
+				case '%':
+					printed_chars += write(1, "%", 1);
+					break;
+				default:
+					printed_chars += write(1, &format[-2], 2);
+					break;
+			}
+		}
+		else
+			printed_chars += write(1, format - 1, 1);
+	}
+	va_end(args);
+	return (printed_chars);
 }
 
