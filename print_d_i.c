@@ -1,38 +1,31 @@
-#include <stdarg.h>
-#include <unistd.h>
-#include <stdio.h>
+#include "main.h"
+
 
 /**
- * _printf - Outputs a formatted string.
- * @format: Character string to print
- * Return: characters printed.
+ * print_d_i - Prints a decimal integer
+ * @args: A va_list containing the integer to print
+ *
+ * Return: The number of digits printed
  */
-int _print_d_i(const char *format, ...)
+int print_d_i(va_list args)
 {
-	va_list args;
-	int printed_chars = 0;
+	int n = va_arg(args, int), power = 1, result = 0;
 
-	va_start(args, format);
-	while (*format)
+	if (n < 0)
 	{
-		if (*format++ == '%')
-		{
-			switch (*format++)
-			{
-				case 'd':
-				case 'i':
-				{
-					int num = va_arg(args, int);
-					char buffer[32];
-					int len = snprintf(buffer, 32, "%d", num);
-					printed_chars += write(1, buffer, len);
-					break;
-				}
-			}
-		}
-		else
-			printed_chars += write(1, format - 1, 1);
+		result += _putchar('-');
+		n *= -1;
 	}
-	va_end(args);
-	return (printed_chars);
+
+	while ((n / power) >= 10)
+		power *= 10;
+
+	while (power > 0)
+	{
+		result += _putchar(((n / power) % 10) + '0');
+		power /= 10;
+	}
+
+	return (result);
 }
+

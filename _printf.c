@@ -34,6 +34,15 @@ int _printf(const char *format, ...)
 						printed_chars += write(1, str++, 1);
 					break;
 				}
+				case 'd':
+				case 'i':
+				{
+					int num = va_arg(args, int);
+					char buffer[32];
+					int len = snprintf(buffer, 32, "%d", num);
+					printed_chars += write(1, buffer, len);
+					break;
+				}
 				case '%':
 					printed_chars += write(1, "%", 1);
 					break;

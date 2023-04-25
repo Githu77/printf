@@ -4,8 +4,9 @@
 #include <stdarg.h>
 #include <unistd.h>
 
+int _putchar(char c);
 int _printf(const char *format, ...);
-int _print_d_i(const char *format, ...);
+int print_d_i(va_list args);
 
 #endif /* MAIN_H */
 
