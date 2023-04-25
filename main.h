@@ -11,8 +11,8 @@
  */
 typedef struct conversion_specifier
 {
-    char format;
-    int (*func)(va_list);
+	char format;
+	int (*func)(va_list);
 } conv_spec;
 
 int print_char(va_list args);
